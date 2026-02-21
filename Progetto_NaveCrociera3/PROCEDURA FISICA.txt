@@ -1,0 +1,229 @@
+Perfetto 👍
+qui trovi TUTTA LA PROCEDURA COMPLETA, semplice, in ordine, come se dovessi farlo davvero in laboratorio con:
+
+Raspberry Pi (computer / DA)
+
+Raspberry Pico W (DC)
+
+Breadboard
+
+Sensore DHT11 (tipo Arduino)
+
+Cavi jumper
+
+Segui passo per passo e non sbagli.
+
+🧩 COMPONENTI NECESSARI
+Hardware
+
+1 × Raspberry Pi (con Raspberry Pi OS)
+
+1 × Raspberry Pico W
+
+1 × Breadboard
+
+1 × Sensore DHT11
+
+Cavi jumper maschio–maschio
+
+1 × Cavo USB per Pico W
+
+Software
+
+Python 3 (già presente su Raspberry Pi)
+
+MicroPython sul Pico W
+
+Editor (Thonny consigliato)
+
+🟢 PARTE 1 – CONFIGURARE IL RASPBERRY PI (DA)
+1️⃣ Installare e preparare il Raspberry Pi
+
+Installa Raspberry Pi OS
+
+Collega:
+
+tastiera
+
+mouse
+
+monitor
+
+rete (WiFi o Ethernet)
+
+2️⃣ Verifica Python
+
+Apri il terminale:
+
+python3 --version
+
+Se risponde → OK ✅
+
+3️⃣ Crea la cartella del progetto
+mkdir PROGETTO3
+cd PROGETTO3
+mkdir da
+mkdir da/iotp
+4️⃣ Inserisci i file del DA
+
+Dentro da/ metti:
+
+iotgwda.py
+
+parametri.json
+
+cripta.py
+
+Dentro da/iotp/:
+
+db.json (vuoto)
+
+👉 Il Raspberry Pi ora è il DA (server TCP/IP)
+
+🟢 PARTE 2 – CONFIGURARE IL RASPBERRY PICO W (DC)
+5️⃣ Installare MicroPython sul Pico W
+
+Tieni premuto BOOTSEL
+
+Collega il Pico W al PC
+
+Copia il file .uf2 di MicroPython nel Pico
+
+Il Pico si riavvia automaticamente
+
+✅ Ora il Pico W è pronto
+
+6️⃣ Aprire Thonny
+
+Seleziona:
+
+Interpreter → MicroPython (Raspberry Pico)
+
+🟢 PARTE 3 – COLLEGAMENTO DHT11 SU BREADBOARD
+7️⃣ Pin del DHT11
+
+Il DHT11 ha 3 pin (guardandolo frontalmente):
+
+[ VCC ] [ DATA ] [ GND ]
+8️⃣ Collegamenti elettrici
+DHT11	Raspberry Pico W
+VCC	3.3V
+DATA	GP0
+GND	GND
+
+📌 Inserisci il DHT11 sulla breadboard
+📌 Usa jumper per collegare tutto
+
+⚠️ NON usare 5V, solo 3.3V
+
+🟢 PARTE 4 – FILE NEL PICO W (DC)
+9️⃣ Struttura nel Pico W
+
+Nel Pico devono esserci:
+
+dc.py
+
+misurazione.py
+
+wifidc.py
+
+wifipico.json
+
+da.json
+
+configurazione.json
+
+👉 Copiali usando Thonny → Upload
+
+🔟 Connessione WiFi del Pico
+
+Nel file wifipico.json:
+
+{
+  "ssid": "iot",
+  "pw": "iotpassword"
+}
+
+Quando esegui dc.py:
+
+il Pico W si collega al WiFi
+
+stampa messaggi di conferma
+
+🟢 PARTE 5 – RETE (FONDAMENTALE)
+1️⃣1️⃣ Tutti sulla stessa rete
+
+Devono essere collegati alla stessa rete WiFi:
+
+Raspberry Pi
+
+Raspberry Pico W
+
+Esempio:
+
+IP Raspberry Pi: 192.168.5.124
+
+Nel file da.json del Pico:
+
+{
+  "IP": "192.168.5.124",
+  "porta": 9090
+}
+🟢 PARTE 6 – AVVIO DEL SISTEMA
+1️⃣2️⃣ Avvia il DA (Raspberry Pi)
+
+Nel Raspberry Pi:
+
+cd PROGETTO3/da
+python3 iotgwda.py
+
+Risultato:
+
+[DA] Server avviato
+1️⃣3️⃣ Avvia il DC (Pico W)
+
+In Thonny:
+
+apri dc.py
+
+premi Run
+
+Risultato:
+
+[DC] WiFi connesso
+[DC] Inviato: {...}
+🟢 PARTE 7 – COSA SUCCEDE
+
+✔ Il DHT11 misura temperatura e umidità
+✔ Il Pico W (DC) invia i dati al Raspberry Pi
+✔ Il Raspberry Pi (DA):
+
+riceve i dati
+
+calcola le medie
+
+salva in db.json
+
+stampa tutto a schermo
+
+🟢 PARTE 8 – FINE E CHIUSURA
+1️⃣4️⃣ Arresto
+
+Sul Raspberry Pi:
+
+CTRL + C
+
+Stampa:
+
+Numero invii totali: X
+🎓 COSA DIRE ALL’ESAME (PRONTO)
+
+“Il Raspberry Pico W funge da Data Collector con sensore DHT11, mentre il Raspberry Pi è il Data Aggregator che riceve i dati tramite socket TCP/IP, li elabora e li memorizza in formato JSON.”
+
+Se vuoi, al prossimo messaggio posso:
+
+farti uno schema elettrico ASCII
+
+prepararti le domande che ti farà il prof
+
+oppure adattare tutto se non usi il Pico W vero 💯
