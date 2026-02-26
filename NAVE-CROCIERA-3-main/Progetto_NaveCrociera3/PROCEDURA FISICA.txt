@@ -593,3 +593,352 @@ Nel prossimo messaggio posso:
 
 Dimmi tu come vuoi continuare 💯
 
+
+
+PARTE 2
+Perfetto 👍
+allora facciamo **LA PARTE 2** **come abbiamo fatto la PARTE 1**:
+
+* lentissima
+* passo passo
+* **come se non avessi mai visto un Raspberry Pico W**
+* **senza saltare nemmeno una micro-azione**
+
+👉 **PARTE 2 = configurare il Raspberry Pico W (DC)**
+👉 Qui il Pico diventa **Data Collector**
+
+---
+
+# 🟢 PARTE 2 – CONFIGURARE IL RASPBERRY PICO W (DC)
+
+## 🔹 COSA STAI FACENDO (idea generale)
+
+In questa parte tu:
+
+* prendi un **Raspberry Pico W**
+* ci installi **MicroPython**
+* lo prepari per:
+
+  * collegarsi al WiFi
+  * eseguire file Python
+  * inviare dati al Raspberry Pi (DA)
+
+⚠️ Il Pico W **NON è un computer**:
+
+* niente Linux
+* niente desktop
+* esegue **solo un programma alla volta**
+
+---
+
+## 🧩 COSA DEVI AVERE DAVANTI A TE
+
+Fisicamente sul banco:
+
+* 1 × Raspberry Pico W
+* 1 × Cavo USB (USB ↔ micro-USB o USB-C, dipende dal modello)
+* 1 × Computer (quello con Debian va benissimo)
+* Connessione Internet
+* Editor **Thonny** installato
+
+---
+
+## 5️⃣ Installare MicroPython sul Pico W
+
+Questa è **LA COSA PIÙ IMPORTANTE** della parte 2.
+
+---
+
+### 🔸 5.1 Cos’è MicroPython (in parole semplici)
+
+* È una **versione di Python**
+* Funziona su microcontrollori
+* Permette di usare:
+
+  * pin
+  * WiFi
+  * sensori
+
+👉 Senza MicroPython il Pico W **non fa nulla**
+
+---
+
+### 🔸 5.2 Scaricare MicroPython (una sola volta)
+
+Dal browser vai sul sito ufficiale MicroPython
+(se te lo dà il prof già pronto, ancora meglio)
+
+Devi ottenere un file tipo:
+
+```text
+rp2-pico-w-XXXXXXXX.uf2
+```
+
+📌 Il file `.uf2` è il “sistema operativo” del Pico
+
+---
+
+### 🔸 5.3 Mettere il Pico W in modalità BOOTSEL
+
+Adesso fai **fisicamente** questo:
+
+1. **NON** collegare ancora il cavo USB
+2. Premi e **TIENI PREMUTO** il pulsantino:
+
+   ```
+   BOOTSEL
+   ```
+3. **Mentre lo tieni premuto**, collega il cavo USB al computer
+4. **Solo ora** puoi lasciare il pulsante
+
+---
+
+### 🔸 5.4 Cosa succede sul computer
+
+Il computer vedrà:
+
+* una nuova **chiavetta USB**
+* nome tipo:
+
+  ```
+  RPI-RP2
+  ```
+
+👉 Questo significa: **perfetto, sei in modalità boot**
+
+---
+
+### 🔸 5.5 Copiare MicroPython nel Pico
+
+Ora:
+
+1. Apri la “chiavetta” `RPI-RP2`
+2. **Trascina dentro** il file `.uf2` di MicroPython
+3. Rilascia
+
+⏱️ Dopo 1–2 secondi:
+
+* la chiavetta sparisce
+* il Pico si riavvia
+
+👉 **MicroPython installato ✅**
+
+---
+
+## 6️⃣ Aprire Thonny (editor Python)
+
+Ora userai Thonny per **parlare con il Pico**.
+
+---
+
+### 🔸 6.1 Avvia Thonny
+
+Dal menu:
+
+* Programmi → Thonny
+* oppure scrivi `thonny` nel terminale
+
+Si apre una finestra con:
+
+* area di scrittura codice
+* console in basso
+
+---
+
+### 🔸 6.2 Selezionare l’interprete giusto (FONDAMENTALE)
+
+In alto:
+
+```
+Strumenti → Opzioni → Interprete
+```
+
+Seleziona:
+
+```
+MicroPython (Raspberry Pico)
+```
+
+Poi:
+
+* porta → **auto**
+* OK
+
+📌 Ora Thonny “parla” col Pico W
+
+---
+
+### 🔸 6.3 Test di funzionamento (mini prova)
+
+Nella finestra in basso (REPL) scrivi:
+
+```python
+print("ciao")
+```
+
+Premi INVIO.
+
+Se risponde:
+
+```text
+ciao
+```
+
+👉 **COMUNICAZIONE OK ✅**
+
+---
+
+## 7️⃣ Concetto IMPORTANTISSIMO: file nel Pico
+
+Il Pico W:
+
+* NON vede le cartelle del computer
+* ha una **sua memoria interna**
+* i file vanno **COPIATI DENTRO**
+
+---
+
+## 8️⃣ Struttura dei file nel Pico W
+
+Nel Pico devono esserci **QUESTI FILE**:
+
+```
+/
+├── dc.py
+├── misurazione.py
+├── wifidc.py
+├── wifipico.json
+├── da.json
+└── configurazione.json
+```
+
+👉 Tutti **nella root**
+👉 Nessuna cartella
+
+---
+
+## 9️⃣ Copiare i file nel Pico (passo passo)
+
+### 🔸 9.1 Apri un file in Thonny
+
+Esempio:
+
+* File → Apri
+* seleziona `dc.py`
+
+---
+
+### 🔸 9.2 Salva **DENTRO IL PICO**
+
+Molto importante:
+
+```
+File → Salva con nome
+```
+
+Ti chiederà:
+
+* 💻 Questo computer
+* 🔌 Raspberry Pico
+
+👉 SCEGLI **Raspberry Pico**
+
+Ripeti per **ogni file**.
+
+---
+
+### 🔸 9.3 Verifica i file nel Pico
+
+In Thonny:
+
+* lato sinistro → “File”
+* seleziona **Raspberry Pico**
+
+Devi vedere **tutti i file elencati sopra**
+
+---
+
+## 🔟 Configurare il WiFi del Pico
+
+Apri `wifipico.json`:
+
+```json
+{
+  "ssid": "iot",
+  "pw": "iotpassword"
+}
+```
+
+📌 Questo file serve a:
+
+* dire al Pico **a che WiFi collegarsi**
+
+---
+
+## 1️⃣1️⃣ Collegamento al DA (Raspberry Pi)
+
+Apri `da.json`:
+
+```json
+{
+  "IP": "192.168.5.124",
+  "porta": 9090
+}
+```
+
+📌 Qui dici:
+
+* **dove si trova il server**
+* **su che porta ascolta**
+
+---
+
+## 1️⃣2️⃣ Avvio del DC (Pico W)
+
+Ora il momento più bello 😄
+
+1. Apri `dc.py`
+2. Premi **Run ▶**
+
+Se tutto è giusto, vedrai:
+
+```text
+[DC] WiFi connesso
+[DC] Inviato: {...}
+```
+
+👉 Il Pico:
+
+* legge il sensore
+* crea il JSON
+* invia i dati
+
+---
+
+## ✅ RISULTATO FINALE DELLA PARTE 2
+
+✔ MicroPython installato
+✔ Thonny configurato
+✔ File copiati correttamente
+✔ WiFi funzionante
+✔ Pico W pronto come **Data Collector**
+
+---
+
+## 🎓 FRASE PERFETTA PER L’ESAME
+
+> “Il Raspberry Pico W è configurato con MicroPython e utilizza moduli locali per la connessione WiFi, la lettura del sensore DHT11 e l’invio dei dati al Data Aggregator tramite socket TCP/IP.”
+
+---
+
+## 🔜 PROSSIMO PASSO
+
+Se vuoi, nel prossimo messaggio posso:
+
+* spiegarti **file per file del Pico**
+* spiegarti **PARTE 3 (cablaggio DHT11)**
+* farti **schema elettrico ASCII**
+* prepararti **le domande del prof**
+
+Dimmi tu e continuiamo 💯
+
