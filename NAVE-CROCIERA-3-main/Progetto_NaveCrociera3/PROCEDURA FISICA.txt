@@ -1,0 +1,595 @@
+Perfetto 👍
+qui trovi TUTTA LA PROCEDURA COMPLETA, semplice, in ordine, come se dovessi farlo davvero in laboratorio con:
+
+Raspberry Pi (computer / DA)
+
+Raspberry Pico W (DC)
+
+Breadboard
+
+Sensore DHT11 (tipo Arduino)
+
+Cavi jumper
+
+Segui passo per passo e non sbagli.
+
+🧩 COMPONENTI NECESSARI
+Hardware
+
+1 × Raspberry Pi (con Raspberry Pi OS)
+
+1 × Raspberry Pico W
+
+1 × Breadboard
+
+1 × Sensore DHT11
+
+Cavi jumper maschio–maschio
+
+1 × Cavo USB per Pico W
+
+Software
+
+Python 3 (già presente su Raspberry Pi)
+
+MicroPython sul Pico W
+
+Editor (Thonny consigliato)
+
+🟢 PARTE 1 – CONFIGURARE IL RASPBERRY PI (DA)
+1️⃣ Installare e preparare il Raspberry Pi
+
+Installa Raspberry Pi OS
+
+Collega:
+
+tastiera
+
+mouse
+
+monitor
+
+rete (WiFi o Ethernet)
+
+2️⃣ Verifica Python
+
+Apri il terminale:
+
+python3 --version
+
+Se risponde → OK ✅
+
+3️⃣ Crea la cartella del progetto
+mkdir PROGETTO3
+cd PROGETTO3
+mkdir da
+mkdir da/iotp
+4️⃣ Inserisci i file del DA
+
+Dentro da/ metti:
+
+iotgwda.py
+
+parametri.json
+
+cripta.py
+
+Dentro da/iotp/:
+
+db.json (vuoto)
+
+👉 Il Raspberry Pi ora è il DA (server TCP/IP)
+
+🟢 PARTE 2 – CONFIGURARE IL RASPBERRY PICO W (DC)
+5️⃣ Installare MicroPython sul Pico W
+
+Tieni premuto BOOTSEL
+
+Collega il Pico W al PC
+
+Copia il file .uf2 di MicroPython nel Pico
+
+Il Pico si riavvia automaticamente
+
+✅ Ora il Pico W è pronto
+
+6️⃣ Aprire Thonny
+
+Seleziona:
+
+Interpreter → MicroPython (Raspberry Pico)
+
+🟢 PARTE 3 – COLLEGAMENTO DHT11 SU BREADBOARD
+7️⃣ Pin del DHT11
+
+Il DHT11 ha 3 pin (guardandolo frontalmente):
+
+[ VCC ] [ DATA ] [ GND ]
+8️⃣ Collegamenti elettrici
+DHT11	Raspberry Pico W
+VCC	3.3V
+DATA	GP0
+GND	GND
+
+📌 Inserisci il DHT11 sulla breadboard
+📌 Usa jumper per collegare tutto
+
+⚠️ NON usare 5V, solo 3.3V
+
+🟢 PARTE 4 – FILE NEL PICO W (DC)
+9️⃣ Struttura nel Pico W
+
+Nel Pico devono esserci:
+
+dc.py
+
+misurazione.py
+
+wifidc.py
+
+wifipico.json
+
+da.json
+
+configurazione.json
+
+👉 Copiali usando Thonny → Upload
+
+🔟 Connessione WiFi del Pico
+
+Nel file wifipico.json:
+
+{
+  "ssid": "iot",
+  "pw": "iotpassword"
+}
+
+Quando esegui dc.py:
+
+il Pico W si collega al WiFi
+
+stampa messaggi di conferma
+
+🟢 PARTE 5 – RETE (FONDAMENTALE)
+1️⃣1️⃣ Tutti sulla stessa rete
+
+Devono essere collegati alla stessa rete WiFi:
+
+Raspberry Pi
+
+Raspberry Pico W
+
+Esempio:
+
+IP Raspberry Pi: 192.168.5.124
+
+Nel file da.json del Pico:
+
+{
+  "IP": "192.168.5.124",
+  "porta": 9090
+}
+🟢 PARTE 6 – AVVIO DEL SISTEMA
+1️⃣2️⃣ Avvia il DA (Raspberry Pi)
+
+Nel Raspberry Pi:
+
+cd PROGETTO3/da
+python3 iotgwda.py
+
+Risultato:
+
+[DA] Server avviato
+1️⃣3️⃣ Avvia il DC (Pico W)
+
+In Thonny:
+
+apri dc.py
+
+premi Run
+
+Risultato:
+
+[DC] WiFi connesso
+[DC] Inviato: {...}
+🟢 PARTE 7 – COSA SUCCEDE
+
+✔ Il DHT11 misura temperatura e umidità
+✔ Il Pico W (DC) invia i dati al Raspberry Pi
+✔ Il Raspberry Pi (DA):
+
+riceve i dati
+
+calcola le medie
+
+salva in db.json
+
+stampa tutto a schermo
+
+🟢 PARTE 8 – FINE E CHIUSURA
+1️⃣4️⃣ Arresto
+
+Sul Raspberry Pi:
+
+CTRL + C
+
+Stampa:
+
+Numero invii totali: X
+🎓 COSA DIRE ALL’ESAME (PRONTO)
+
+“Il Raspberry Pico W funge da Data Collector con sensore DHT11, mentre il Raspberry Pi è il Data Aggregator che riceve i dati tramite socket TCP/IP, li elabora e li memorizza in formato JSON.”
+
+Se vuoi, al prossimo messaggio posso:
+
+farti uno schema elettrico ASCII
+
+prepararti le domande che ti farà il prof
+
+oppure adattare tutto se non usi il Pico W vero 💯
+
+
+
+
+
+
+SPIEGAZIONE PARTI
+
+PARTE 1
+Perfetto 👍
+allora facciamo **SOLO la PARTE 1**, **lentissima**, **super-dettagliata**, **come se fossimo davvero in laboratorio** e **come se tu non avessi mai usato un Raspberry Pi prima**.
+Non salto **nessun** passaggio, nemmeno il più banale.
+
+---
+
+# 🟢 PARTE 1 – CONFIGURARE IL RASPBERRY PI (DA)
+
+*(Data Aggregator – cioè il “server” che riceve i dati)*
+
+Useremo un **Raspberry Pi** con **Raspberry Pi OS**.
+
+---
+
+## 🔹 COSA STAI FACENDO (prima di iniziare)
+
+È importante capire **cosa succede**, anche a grandi linee:
+
+* Il **Raspberry Pi** è un **computer vero**
+* Qui gira **Python**
+* Qui gira lo script **iotgwda.py**
+* Questo script:
+
+  * apre una **porta di rete**
+  * aspetta connessioni
+  * riceve dati dal Pico W
+  * li elabora e li salva
+
+👉 In questa **PARTE 1**:
+
+* **NON** tocchiamo il Pico
+* **NON** tocchiamo sensori
+* **Prepariamo solo il Raspberry Pi**
+
+---
+
+## 🧩 COSA TI SERVE DAVANTI A TE (fisicamente)
+
+Sul banco devi avere:
+
+* 1 × Raspberry Pi
+* 1 × Alimentatore USB del Raspberry Pi
+* 1 × Monitor
+* 1 × Cavo HDMI
+* 1 × Tastiera USB
+* 1 × Mouse USB
+* Connessione Internet (WiFi o Ethernet)
+
+---
+
+## 1️⃣ Installare e preparare il Raspberry Pi
+
+### 🔸 1.1 Inserisci la microSD nel Raspberry Pi
+
+La microSD:
+
+* è **il “disco fisso”**
+* contiene il sistema operativo
+
+👉 Deve già avere **DEBIAN** installato
+(se il prof te l’ha già data pronta, perfetto)
+
+---
+
+### 🔸 1.2 Collega tutto (ordine corretto)
+
+1. Collega **monitor** al Raspberry Pi+BVBVCBVCGUTYUTY (HDMI)
+2. Collega **tastiera**
+3. Collega **mouse**
+4. Collega **rete**:
+
+   * Ethernet → cavo diretto
+     **oppure**
+   * WiFi → configurerai dopo
+5. **Per ultimo** collega l’alimentazione
+
+⚠️ Appena colleghi l’alimentazione → **il Raspberry Pi si accende**
+
+---
+
+### 🔸 1.3 Primo avvio di Raspberry Pi OS
+
+Vedrai:
+
+* Schermata colorata
+* Poi il **desktop** (come Windows)
+
+Alla prima accensione potrebbe chiederti:
+
+* lingua
+* tastiera
+* WiFi
+* aggiornamenti
+
+👉 **Segui le istruzioni a schermo**, non puoi sbagliare
+👉 Quando vedi il desktop → sei pronto
+
+---
+
+## 2️⃣ Verifica che Python sia installato
+
+Python è **il linguaggio che userai**.
+
+### 🔸 2.1 Apri il Terminale
+
+Sul desktop:
+
+* clicca sull’icona **Terminale**
+* si apre una finestra **nera** con testo
+
+Quella è la **shell Linux**.
+
+---
+
+### 🔸 2.2 Scrivi il comando (con calma)
+
+Nel terminale scrivi **esattamente**:
+
+```bash
+python3 --version
+```
+
+Poi premi **INVIO**
+
+---
+
+### 🔸 2.3 Cosa deve succedere
+
+Se vedi qualcosa tipo:
+
+```
+Python 3.11.x
+```
+
+👉 **TUTTO OK ✅**
+
+Se invece:
+
+* dice “command not found”
+* o non stampa nulla
+
+⚠️ significa che Python non è installato
+(ma **di solito su Raspberry Pi OS c’è sempre**)
+
+---
+
+## 3️⃣ Creare la cartella del progetto (PASSAGGIO CHIAVE)
+
+Ora creiamo **l’ambiente di lavoro**.
+
+### 🔸 3.1 Dove sei adesso?
+
+Nel terminale scrivi:
+
+```bash
+pwd
+```
+
+Vedrai qualcosa tipo:
+
+```
+/home/pi
+```
+
+👉 Sei nella **cartella home dell’utente pi**
+
+---
+
+### 🔸 3.2 Crea la cartella PROGETTO3
+
+Scrivi:
+
+```bash
+mkdir PROGETTO3
+```
+
+Cosa fa:
+
+* `mkdir` = **make directory**
+* crea una cartella chiamata **PROGETTO3**
+
+---
+
+### 🔸 3.3 Entra nella cartella PROGETTO3
+
+```bash
+cd PROGETTO3
+```
+
+* `cd` = change directory
+* ora **lavori dentro PROGETTO3**
+
+Verifica:
+
+```bash
+pwd
+```
+
+Deve uscire:
+
+```
+/home/pi/PROGETTO3
+```
+
+---
+
+### 🔸 3.4 Crea la cartella `da`
+
+```bash
+mkdir da
+```
+
+👉 Qui starà **il Data Aggregator**
+
+---
+
+### 🔸 3.5 Entra in `da`
+
+```bash
+cd da
+```
+
+---
+
+### 🔸 3.6 Crea la sottocartella `iotp`
+
+```bash
+mkdir iotp
+```
+
+📌 Questa servirà per:
+
+* salvare `db.json`
+* memorizzare i dati ricevuti
+
+---
+
+### 🔸 3.7 Struttura finale (IMPORTANTISSIMA)
+
+Se ora scrivi:
+
+```bash
+tree
+```
+
+(se `tree` non c’è, usa `ls`)
+
+Devi avere:
+
+```
+PROGETTO3/
+ └── da/
+     └── iotp/
+```
+
+👉 **Se la struttura è questa, sei PERFETTO**
+
+---
+
+## 4️⃣ Inserire i file del DA
+
+Ora mettiamo i file **Python e JSON**.
+
+### 🔸 4.1 Dove vanno i file
+
+Dentro:
+
+```
+PROGETTO3/da/
+```
+
+ci devono essere:
+
+* `iotgwda.py`  ← **server TCP/IP**
+* `parametri.json` ← configurazione
+* `cripta.py` ← modulo (anche se finto)
+
+Dentro:
+
+```
+PROGETTO3/da/iotp/
+```
+
+* `db.json` ← **VUOTO**
+
+---
+
+### 🔸 4.2 Creare `db.json` vuoto
+
+Entra nella cartella giusta:
+
+```bash
+cd iotp
+```
+
+Poi:
+
+```bash
+touch db.json
+```
+
+📌 `touch` crea un file vuoto
+
+Controlla:
+
+```bash
+ls
+```
+
+Devi vedere:
+
+```
+db.json
+```
+
+---
+
+### 🔸 4.3 Torna nella cartella `da`
+
+```bash
+cd ..
+```
+
+Ora sei di nuovo in:
+
+```
+PROGETTO3/da
+```
+
+---
+
+## ✅ RISULTATO FINALE DELLA PARTE 1
+
+✔ Raspberry Pi acceso
+✔ Raspberry Pi OS funzionante
+✔ Python 3 verificato
+✔ Cartelle create correttamente
+✔ Struttura pronta per il server
+✔ Raspberry Pi **è pronto a diventare il DA**
+
+👉 **NON abbiamo ancora eseguito nulla**
+👉 **NON abbiamo ancora scritto codice**
+👉 **È tutto PREPARAZIONE corretta**
+
+---
+
+## 🔜 PROSSIMO PASSO (se vuoi)
+
+Nel prossimo messaggio posso:
+
+* spiegarti **riga per riga `parametri.json`**
+* spiegarti **come funziona `iotgwda.py`**
+* spiegarti **cos’è un server TCP/IP senza formule**
+* oppure passare alla **PARTE 2 (Pico W)**
+
+Dimmi tu come vuoi continuare 💯
+
