@@ -1,0 +1,8 @@
+{
+  "IP_SERVER": "192.168.1.42",
+  "PORTA_SERVER": 9090,
+  "TEMPO_RILEVAZIONE": 5,
+  "TEMPO_INVIO": 20,
+  "N_DECIMALI": 2,
+  "IDENTITA_GIOT": "nave_crociera"
+}
